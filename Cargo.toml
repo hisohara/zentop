@@ -1,0 +1,22 @@
+[package]
+name = "zentop"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Topology detection
+hwlocality = "1.0.0-alpha.11"
+
+# CPU statistics
+sysinfo = "0.32"
+
+# Terminal UI
+ratatui = "0.29"
+crossterm = "0.28"
+
+# CLI argument parsing
+clap = { version = "4", features = ["derive"] }
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"

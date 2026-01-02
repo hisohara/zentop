@@ -1,0 +1,19 @@
+# Build output
+/target/
+
+# Cargo lock file for binary crates (optional, but recommended to commit)
+# Cargo.lock
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Debug files
+*.pdb
