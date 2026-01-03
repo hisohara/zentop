@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 # Topology detection
-hwlocality = "1.0.0-alpha.11"
+hwlocality = { version = "1.0.0-alpha.11", features = ["vendored"] }
 
 # CPU statistics
 sysinfo = "0.32"
