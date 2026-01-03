@@ -19,33 +19,15 @@ A htop-like CPU monitor for AMD Zen architecture processors, written in Rust.
 ### Build Dependencies
 
 - Rust 1.70 or later
-- libhwloc development headers
-- pkg-config
 
-#### Ubuntu/Debian
-
-```bash
-sudo apt-get install pkg-config libhwloc-dev
-```
-
-#### Fedora/RHEL
-
-```bash
-sudo dnf install pkgconfig hwloc-devel
-```
-
-#### Arch Linux
-
-```bash
-sudo pacman -S pkgconf hwloc
-```
+The hwloc library is bundled via the `vendored` feature, so no system hwloc installation is required.
 
 ## Installation
 
 ### From source
 
 ```bash
-git clone https://github.com/hisaohara/zentop.git
+git clone https://github.com/hisohara/zentop.git
 cd zentop
 cargo build --release
 ```
