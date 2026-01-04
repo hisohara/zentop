@@ -107,6 +107,7 @@ impl std::fmt::Display for NpsMode {
 /// Complete system topology
 #[derive(Debug, Clone)]
 pub struct ZenTopology {
+    pub cpu_model: String,
     pub generation: ZenGeneration,
     pub nps_mode: NpsMode,
     pub cores: Vec<CpuCore>,
@@ -122,6 +123,7 @@ pub struct ZenTopology {
 impl Default for ZenTopology {
     fn default() -> Self {
         Self {
+            cpu_model: String::new(),
             generation: ZenGeneration::Unknown,
             nps_mode: NpsMode::Unknown,
             cores: Vec::new(),

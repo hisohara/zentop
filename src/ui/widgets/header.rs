@@ -47,8 +47,9 @@ impl Widget for Header<'_> {
 
         // Line 1: Title and system info
         let title = format!(
-            " zentop | {} | {} | {}C/{}T | SMT: {} ",
-            self.topology.generation,
+            " zentop {} | {} | {} | {}C/{}T | SMT: {} ",
+            env!("CARGO_PKG_VERSION"),
+            self.topology.cpu_model,
             self.topology.nps_mode,
             self.topology.total_cores,
             self.topology.total_threads,

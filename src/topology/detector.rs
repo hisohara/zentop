@@ -123,8 +123,9 @@ pub fn detect_topology() -> Result<ZenTopology> {
 
     topology.cores = cores;
 
-    // Detect Zen generation
+    // Detect Zen generation and CPU model
     topology.generation = detect_zen_generation(&topology);
+    topology.cpu_model = detect_cpu_model();
 
     Ok(topology)
 }
@@ -176,6 +177,48 @@ fn detect_nps_mode(numa_count: usize, package_count: usize) -> NpsMode {
         4 => NpsMode::Nps4,
         _ => NpsMode::Unknown,
     }
+}
+
+/// Detect CPU model name from /proc/cpuinfo
+/// Extracts short model name like "EPYC 9755" from "AMD EPYC 9755 128-Core Processor"
+fn detect_cpu_model() -> String {
+    let cpuinfo = match std::fs::read_to_string("/proc/cpuinfo") {
+        Ok(content) => content,
+        Err(_) => return String::from("Unknown"),
+    };
+
+    for line in cpuinfo.lines() {
+        if line.starts_with("model name") {
+            if let Some(value) = line.split(':').nth(1) {
+                return parse_cpu_model(value.trim());
+            }
+        }
+    }
+    String::from("Unknown")
+}
+
+/// Parse CPU model string to extract short name
+/// Examples:
+///   "AMD EPYC 9755 128-Core Processor" -> "EPYC 9755"
+///   "AMD Ryzen 9 7950X 16-Core Processor" -> "Ryzen 9 7950X"
+///   "AMD Ryzen Threadripper PRO 5995WX 64-Cores" -> "Threadripper PRO 5995WX"
+fn parse_cpu_model(full_name: &str) -> String {
+    let parts: Vec<&str> = full_name.split_whitespace().collect();
+
+    // Find start index (skip "AMD" if present)
+    let start = if parts.first() == Some(&"AMD") { 1 } else { 0 };
+
+    // Find end index (stop before "N-Core" pattern or end)
+    let end = parts
+        .iter()
+        .position(|p| p.ends_with("-Core") || p.ends_with("-Cores") || *p == "Processor")
+        .unwrap_or(parts.len());
+
+    if start >= end {
+        return full_name.to_string();
+    }
+
+    parts[start..end].join(" ")
 }
 
 fn build_nps_nodes(numa_nodes: &[NumaNode], packages: usize) -> Vec<NpsNode> {
