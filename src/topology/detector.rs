@@ -27,15 +27,14 @@ pub fn detect_topology() -> Result<ZenTopology> {
 
         // Find parent objects by walking up the tree
         let package_id = find_ancestor_index(&pu, ObjectType::Package).unwrap_or(0);
-        // Try Group first (for Die/CCD), fallback to L3Cache
-        let die_id = find_ancestor_index(&pu, ObjectType::Group);
+        // In Zen architecture, cores sharing L3 cache belong to the same CCD
         let l3_id = find_ancestor_index(&pu, ObjectType::L3Cache);
         let core_id = find_ancestor_index(&pu, ObjectType::Core);
         let numa_id = find_numa_node(&topo, &pu).unwrap_or(0);
 
-        // CCD is represented by Group or L3 cache
-        let ccd_id = die_id.or(l3_id).unwrap_or(0);
-        let ccx_id = l3_id.unwrap_or(ccd_id);
+        // CCD is determined by L3 cache sharing
+        let ccd_id = l3_id.unwrap_or(0);
+        let ccx_id = ccd_id; // In Zen, CCD and CCX are equivalent (same L3 cache group)
         let physical_id = core_id.unwrap_or(os_idx);
 
         let core = CpuCore {
