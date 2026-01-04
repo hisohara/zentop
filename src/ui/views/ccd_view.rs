@@ -17,15 +17,16 @@ pub fn render_ccd_view(
     scroll_offset: usize,
     display_mode: DisplayMode,
     theme: &Theme,
+    socket_filter: Option<usize>,
 ) {
     if area.height == 0 || topology.ccds.is_empty() {
         return;
     }
 
-    // Build group usages
+    // Build group usages (filtered by socket if specified)
     let mut groups: Vec<GroupUsage> = Vec::new();
 
-    for ccd in &topology.ccds {
+    for ccd in topology.ccds.iter().filter(|c| socket_filter.map_or(true, |s| c.package_id == s)) {
         let cores_in_ccd: Vec<_> = if show_smt {
             ccd.cores.clone()
         } else {

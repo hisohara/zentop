@@ -17,13 +17,14 @@ pub fn render_core_view(
     scroll_offset: usize,
     display_mode: DisplayMode,
     theme: &Theme,
+    socket_filter: Option<usize>,
 ) {
     if area.height == 0 {
         return;
     }
 
-    // Filter cores based on SMT setting
-    let cores_to_show: Vec<_> = filter_cores(topology, show_smt);
+    // Filter cores based on SMT setting and socket filter
+    let cores_to_show: Vec<_> = filter_cores(topology, show_smt, socket_filter);
 
     match display_mode {
         DisplayMode::Full => {
@@ -38,17 +39,29 @@ pub fn render_core_view(
     }
 }
 
-/// Filter cores based on SMT setting
-pub fn filter_cores(topology: &ZenTopology, show_smt: bool) -> Vec<&CpuCore> {
-    if show_smt {
-        topology.cores.iter().collect()
-    } else {
-        topology
-            .cores
-            .iter()
-            .filter(|c| c.smt_sibling.map_or(true, |s| c.id < s))
-            .collect()
-    }
+/// Filter cores based on SMT setting and socket filter
+pub fn filter_cores(topology: &ZenTopology, show_smt: bool, socket_filter: Option<usize>) -> Vec<&CpuCore> {
+    topology
+        .cores
+        .iter()
+        .filter(|c| {
+            // Filter by socket if specified
+            if let Some(socket) = socket_filter {
+                if c.package_id != socket {
+                    return false;
+                }
+            }
+            // Filter SMT siblings if not showing SMT
+            if !show_smt {
+                if let Some(sibling) = c.smt_sibling {
+                    if c.id >= sibling {
+                        return false;
+                    }
+                }
+            }
+            true
+        })
+        .collect()
 }
 
 /// Render full view (original 1-core-per-line)

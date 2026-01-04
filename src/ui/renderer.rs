@@ -1,6 +1,7 @@
 use ratatui::{
     buffer::Buffer,
     layout::{Constraint, Layout, Rect},
+    style::Modifier,
     widgets::Widget,
     Frame,
 };
@@ -52,10 +53,45 @@ struct ViewWidget<'a> {
 
 impl Widget for ViewWidget<'_> {
     fn render(self, area: Rect, buf: &mut Buffer) {
+        if self.app.topology.packages == 2 {
+            // 2-socket system: split screen vertically
+            let half_width = area.width / 2;
+            let left_area = Rect::new(area.x, area.y, half_width, area.height);
+            let right_area = Rect::new(area.x + half_width, area.y, area.width - half_width, area.height);
+
+            // Render both sockets
+            self.render_socket(left_area, buf, Some(0));
+            self.render_socket(right_area, buf, Some(1));
+        } else {
+            // Single socket or other: use full area
+            self.render_socket(area, buf, None);
+        }
+    }
+}
+
+impl ViewWidget<'_> {
+    /// Render a socket's content with optional socket label
+    fn render_socket(&self, area: Rect, buf: &mut Buffer, socket_filter: Option<usize>) {
+        if area.height == 0 {
+            return;
+        }
+
+        // If socket filter is specified, show socket label
+        let content_area = if let Some(socket_id) = socket_filter {
+            self.render_socket_label(area, buf, socket_id);
+            Rect::new(area.x, area.y + 1, area.width, area.height.saturating_sub(1))
+        } else {
+            area
+        };
+
+        if content_area.height == 0 {
+            return;
+        }
+
         match self.app.view_mode {
             ViewMode::Core => {
                 render_core_view(
-                    area,
+                    content_area,
                     buf,
                     &self.app.topology,
                     &self.app.stats,
@@ -63,11 +99,12 @@ impl Widget for ViewWidget<'_> {
                     self.app.scroll_offset,
                     self.app.display_mode,
                     self.theme,
+                    socket_filter,
                 );
             }
             ViewMode::Ccd => {
                 render_ccd_view(
-                    area,
+                    content_area,
                     buf,
                     &self.app.topology,
                     &self.app.stats,
@@ -75,11 +112,12 @@ impl Widget for ViewWidget<'_> {
                     self.app.scroll_offset,
                     self.app.display_mode,
                     self.theme,
+                    socket_filter,
                 );
             }
             ViewMode::Nps => {
                 render_nps_view(
-                    area,
+                    content_area,
                     buf,
                     &self.app.topology,
                     &self.app.stats,
@@ -87,11 +125,12 @@ impl Widget for ViewWidget<'_> {
                     self.app.scroll_offset,
                     self.app.display_mode,
                     self.theme,
+                    socket_filter,
                 );
             }
             ViewMode::Numa => {
                 render_numa_view(
-                    area,
+                    content_area,
                     buf,
                     &self.app.topology,
                     &self.app.stats,
@@ -99,8 +138,18 @@ impl Widget for ViewWidget<'_> {
                     self.app.scroll_offset,
                     self.app.display_mode,
                     self.theme,
+                    socket_filter,
                 );
             }
         }
+    }
+
+    /// Render socket label at the top of the area
+    fn render_socket_label(&self, area: Rect, buf: &mut Buffer, socket_id: usize) {
+        let label = format!(" Socket {} ", socket_id);
+        let style = ratatui::style::Style::default()
+            .fg(self.theme.text_highlight)
+            .add_modifier(Modifier::BOLD);
+        buf.set_string(area.x, area.y, &label, style);
     }
 }

@@ -16,6 +16,7 @@ pub fn render_nps_view(
     scroll_offset: usize,
     display_mode: DisplayMode,
     theme: &Theme,
+    socket_filter: Option<usize>,
 ) {
     if area.height == 0 || topology.nps_nodes.is_empty() {
         return;
@@ -24,6 +25,15 @@ pub fn render_nps_view(
     let mut groups: Vec<GroupUsage> = Vec::new();
 
     for nps in &topology.nps_nodes {
+        // Filter by socket: check first core's package_id
+        if let Some(socket) = socket_filter {
+            let nps_socket = nps.cores.first().and_then(|&cpu_id| {
+                topology.cores.get(cpu_id).map(|c| c.package_id)
+            });
+            if nps_socket != Some(socket) {
+                continue;
+            }
+        }
         let cores_in_nps: Vec<_> = if show_smt {
             nps.cores.clone()
         } else {
