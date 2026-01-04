@@ -1,8 +1,8 @@
 use ratatui::{
     buffer::Buffer,
     layout::{Constraint, Layout, Rect},
-    style::Modifier,
-    widgets::Widget,
+    style::{Modifier, Style},
+    widgets::{Block, Borders, Widget},
     Frame,
 };
 
@@ -70,28 +70,41 @@ impl Widget for ViewWidget<'_> {
 }
 
 impl ViewWidget<'_> {
-    /// Render a socket's content with optional socket label
+    /// Render a socket's content with border frame
     fn render_socket(&self, area: Rect, buf: &mut Buffer, socket_filter: Option<usize>) {
-        if area.height == 0 {
+        if area.height == 0 || area.width == 0 {
             return;
         }
 
-        // If socket filter is specified, show socket label
-        let content_area = if let Some(socket_id) = socket_filter {
-            self.render_socket_label(area, buf, socket_id);
-            Rect::new(area.x, area.y + 1, area.width, area.height.saturating_sub(1))
+        // Create block with border
+        let block = if let Some(socket_id) = socket_filter {
+            Block::default()
+                .borders(Borders::ALL)
+                .title(format!(" Socket {} ", socket_id))
+                .border_style(Style::default().fg(self.theme.border))
+                .title_style(
+                    Style::default()
+                        .fg(self.theme.text_highlight)
+                        .add_modifier(Modifier::BOLD),
+                )
         } else {
-            area
+            Block::default()
+                .borders(Borders::ALL)
+                .border_style(Style::default().fg(self.theme.border))
         };
 
-        if content_area.height == 0 {
+        // Get inner area and render block
+        let inner_area = block.inner(area);
+        block.render(area, buf);
+
+        if inner_area.height == 0 || inner_area.width == 0 {
             return;
         }
 
         match self.app.view_mode {
             ViewMode::Core => {
                 render_core_view(
-                    content_area,
+                    inner_area,
                     buf,
                     &self.app.topology,
                     &self.app.stats,
@@ -104,7 +117,7 @@ impl ViewWidget<'_> {
             }
             ViewMode::Ccd => {
                 render_ccd_view(
-                    content_area,
+                    inner_area,
                     buf,
                     &self.app.topology,
                     &self.app.stats,
@@ -117,7 +130,7 @@ impl ViewWidget<'_> {
             }
             ViewMode::Nps => {
                 render_nps_view(
-                    content_area,
+                    inner_area,
                     buf,
                     &self.app.topology,
                     &self.app.stats,
@@ -130,7 +143,7 @@ impl ViewWidget<'_> {
             }
             ViewMode::Numa => {
                 render_numa_view(
-                    content_area,
+                    inner_area,
                     buf,
                     &self.app.topology,
                     &self.app.stats,
@@ -142,14 +155,5 @@ impl ViewWidget<'_> {
                 );
             }
         }
-    }
-
-    /// Render socket label at the top of the area
-    fn render_socket_label(&self, area: Rect, buf: &mut Buffer, socket_id: usize) {
-        let label = format!(" Socket {} ", socket_id);
-        let style = ratatui::style::Style::default()
-            .fg(self.theme.text_highlight)
-            .add_modifier(Modifier::BOLD);
-        buf.set_string(area.x, area.y, &label, style);
     }
 }
