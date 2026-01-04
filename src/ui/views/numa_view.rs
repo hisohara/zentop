@@ -1,5 +1,6 @@
 use ratatui::{buffer::Buffer, layout::Rect};
 
+use crate::app::DisplayMode;
 use crate::stats::{GroupUsage, SystemStats};
 use crate::topology::ZenTopology;
 use crate::ui::theme::Theme;
@@ -13,6 +14,7 @@ pub fn render_numa_view(
     stats: &SystemStats,
     show_smt: bool,
     scroll_offset: usize,
+    display_mode: DisplayMode,
     theme: &Theme,
 ) {
     if area.height == 0 || topology.numa_nodes.is_empty() {
@@ -58,5 +60,5 @@ pub fn render_numa_view(
         groups.push(GroupUsage::from_cores(name, numa.id, &usages));
     }
 
-    render_grouped_view(area, buf, &groups, scroll_offset, theme);
+    render_grouped_view(area, buf, &groups, scroll_offset, display_mode, theme);
 }

@@ -5,7 +5,7 @@ use ratatui::{
     widgets::Widget,
 };
 
-use crate::app::ViewMode;
+use crate::app::{DisplayMode, ViewMode};
 use crate::topology::ZenTopology;
 use crate::ui::theme::Theme;
 
@@ -13,6 +13,7 @@ use crate::ui::theme::Theme;
 pub struct Header<'a> {
     topology: &'a ZenTopology,
     view_mode: ViewMode,
+    display_mode: DisplayMode,
     show_smt: bool,
     total_usage: f32,
     theme: &'a Theme,
@@ -22,6 +23,7 @@ impl<'a> Header<'a> {
     pub fn new(
         topology: &'a ZenTopology,
         view_mode: ViewMode,
+        display_mode: DisplayMode,
         show_smt: bool,
         total_usage: f32,
         theme: &'a Theme,
@@ -29,6 +31,7 @@ impl<'a> Header<'a> {
         Self {
             topology,
             view_mode,
+            display_mode,
             show_smt,
             total_usage,
             theme,
@@ -81,9 +84,15 @@ impl Widget for Header<'_> {
 
             let smt_str = if self.show_smt { "All" } else { "Physical" };
 
+            let display_str = match self.display_mode {
+                DisplayMode::Full => "Full",
+                DisplayMode::Compact => "Compact",
+                DisplayMode::Heatmap => "Heatmap",
+            };
+
             let status = format!(
-                " View: {} | Display: {} | Total: {:.1}% | [h]elp [q]uit ",
-                mode_str, smt_str, self.total_usage
+                " View: {} | Cores: {} | Mode: [m]{} | Total: {:.1}% | [h]elp [q]uit ",
+                mode_str, smt_str, display_str, self.total_usage
             );
 
             let status_style = Style::default()

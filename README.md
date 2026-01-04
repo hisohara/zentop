@@ -10,9 +10,14 @@ A htop-like CPU monitor for AMD Zen architecture processors, written in Rust.
   - **CCD view** (`d`): Grouped by Core Complex Die
   - **NPS view** (`n`): Grouped by NUMA Per Socket nodes
   - **NUMA view** (`u`): Grouped by NUMA nodes
+- Multiple display modes for large core counts:
+  - **Full**: One core per line (original layout)
+  - **Compact**: 16 cores per row with mini bar graphs
+  - **Heatmap**: Up to 80 cores per row with colored blocks
 - SMT (Simultaneous Multi-Threading) toggle
 - Automatic Zen generation detection
 - Scrollable interface for systems with many cores
+- Optimized for large systems (up to 768 threads)
 
 ## Requirements
 
@@ -62,6 +67,7 @@ zentop [OPTIONS]
 | `d` | Switch to CCD view |
 | `n` | Switch to NPS view |
 | `u` | Switch to NUMA view |
+| `m` | Cycle display mode (Full → Compact → Heatmap) |
 | `s` | Toggle SMT display (all threads / physical cores only) |
 | `h` / `?` | Show help overlay |
 | `j` / `Down` | Scroll down |
@@ -93,6 +99,7 @@ src/
 │   └── types.rs     # Stats data structures
 ├── ui/              # User interface
 │   ├── renderer.rs  # Main rendering logic
+│   ├── layout.rs    # Grid layout calculator
 │   ├── theme.rs     # Color scheme
 │   ├── views/       # View mode implementations
 │   └── widgets/     # Reusable UI components

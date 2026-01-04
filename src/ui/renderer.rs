@@ -21,6 +21,7 @@ pub fn render(frame: &mut Frame, app: &App, theme: &Theme) {
     let header = Header::new(
         &app.topology,
         app.view_mode,
+        app.display_mode,
         app.show_smt,
         app.stats.total_usage,
         theme,
@@ -60,6 +61,7 @@ impl Widget for ViewWidget<'_> {
                     &self.app.stats,
                     self.app.show_smt,
                     self.app.scroll_offset,
+                    self.app.display_mode,
                     self.theme,
                 );
             }
@@ -71,6 +73,7 @@ impl Widget for ViewWidget<'_> {
                     &self.app.stats,
                     self.app.show_smt,
                     self.app.scroll_offset,
+                    self.app.display_mode,
                     self.theme,
                 );
             }
@@ -82,6 +85,7 @@ impl Widget for ViewWidget<'_> {
                     &self.app.stats,
                     self.app.show_smt,
                     self.app.scroll_offset,
+                    self.app.display_mode,
                     self.theme,
                 );
             }
@@ -93,6 +97,7 @@ impl Widget for ViewWidget<'_> {
                     &self.app.stats,
                     self.app.show_smt,
                     self.app.scroll_offset,
+                    self.app.display_mode,
                     self.theme,
                 );
             }

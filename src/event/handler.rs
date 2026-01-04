@@ -50,6 +50,7 @@ pub enum KeyAction {
     ViewNuma,
     ToggleSmt,
     ToggleHelp,
+    CycleDisplayMode,
     ScrollUp,
     ScrollDown,
     None,
@@ -70,6 +71,9 @@ pub fn handle_key(key: KeyEvent) -> KeyAction {
 
         // SMT toggle
         KeyCode::Char('s') => KeyAction::ToggleSmt,
+
+        // Display mode
+        KeyCode::Char('m') => KeyAction::CycleDisplayMode,
 
         // Help
         KeyCode::Char('h') => KeyAction::ToggleHelp,

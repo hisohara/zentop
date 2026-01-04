@@ -22,7 +22,7 @@ impl Widget for HelpOverlay<'_> {
     fn render(self, area: Rect, buf: &mut Buffer) {
         // Calculate centered popup area
         let popup_width = 50.min(area.width.saturating_sub(4));
-        let popup_height = 16.min(area.height.saturating_sub(4));
+        let popup_height = 18.min(area.height.saturating_sub(4));
 
         let popup_x = area.x + (area.width.saturating_sub(popup_width)) / 2;
         let popup_y = area.y + (area.height.saturating_sub(popup_height)) / 2;
@@ -44,6 +44,7 @@ impl Widget for HelpOverlay<'_> {
 
   Display:
     s    Toggle SMT (all threads / physical only)
+    m    Cycle display mode (Full/Compact/Heatmap)
 
   Navigation:
     j/↓  Scroll down
