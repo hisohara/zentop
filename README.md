@@ -7,15 +7,15 @@ A htop-like CPU monitor for AMD Zen architecture processors, written in Rust.
 - Real-time CPU usage monitoring with htop-style bar graphs
 - Multiple view modes for AMD Zen topology:
   - **Core view** (`c`): Individual CPU cores
-  - **CCD view** (`d`): Grouped by Core Complex Die
+  - **CCD view** (`d`): Grouped by Core Complex Die (L3 cache sharing)
   - **NPS view** (`n`): Grouped by NUMA Per Socket nodes
-  - **NUMA view** (`u`): Grouped by NUMA nodes
 - Multiple display modes for large core counts:
   - **Full**: One core per line (original layout)
   - **Compact**: 16 cores per row with mini bar graphs
   - **Heatmap**: Up to 80 cores per row with colored blocks
 - SMT (Simultaneous Multi-Threading) toggle
-- Automatic Zen generation detection
+- **2-socket support**: Split screen with Socket 0/1 side by side
+- Automatic Zen generation and CPU model detection
 - Scrollable interface for systems with many cores
 - Optimized for large systems (up to 768 threads)
 
@@ -66,7 +66,6 @@ zentop [OPTIONS]
 | `c` | Switch to Core view |
 | `d` | Switch to CCD view |
 | `n` | Switch to NPS view |
-| `u` | Switch to NUMA view |
 | `m` | Cycle display mode (Full → Compact → Heatmap) |
 | `s` | Toggle SMT display (all threads / physical cores only) |
 | `h` / `?` | Show help overlay |
