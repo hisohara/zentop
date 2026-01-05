@@ -7,7 +7,6 @@ pub enum ViewMode {
     Core,
     Ccd,
     Nps,
-    Numa,
 }
 
 /// Display density mode

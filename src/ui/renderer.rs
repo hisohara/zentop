@@ -8,7 +8,7 @@ use ratatui::{
 
 use crate::app::{App, ViewMode};
 use crate::ui::theme::Theme;
-use crate::ui::views::{render_ccd_view, render_core_view, render_nps_view, render_numa_view};
+use crate::ui::views::{render_ccd_view, render_core_view, render_nps_view};
 use crate::ui::widgets::{Header, HelpOverlay};
 
 /// Render the application UI
@@ -130,19 +130,6 @@ impl ViewWidget<'_> {
             }
             ViewMode::Nps => {
                 render_nps_view(
-                    inner_area,
-                    buf,
-                    &self.app.topology,
-                    &self.app.stats,
-                    self.app.show_smt,
-                    self.app.scroll_offset,
-                    self.app.display_mode,
-                    self.theme,
-                    socket_filter,
-                );
-            }
-            ViewMode::Numa => {
-                render_numa_view(
                     inner_area,
                     buf,
                     &self.app.topology,

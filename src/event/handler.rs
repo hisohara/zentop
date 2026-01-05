@@ -47,7 +47,6 @@ pub enum KeyAction {
     ViewCore,
     ViewCcd,
     ViewNps,
-    ViewNuma,
     ToggleSmt,
     ToggleHelp,
     CycleDisplayMode,
@@ -67,7 +66,6 @@ pub fn handle_key(key: KeyEvent) -> KeyAction {
         KeyCode::Char('c') => KeyAction::ViewCore,
         KeyCode::Char('d') => KeyAction::ViewCcd,
         KeyCode::Char('n') => KeyAction::ViewNps,
-        KeyCode::Char('u') => KeyAction::ViewNuma,
 
         // SMT toggle
         KeyCode::Char('s') => KeyAction::ToggleSmt,

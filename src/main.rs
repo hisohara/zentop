@@ -74,7 +74,6 @@ fn run_app(
                         KeyAction::ViewCore => app.set_view_mode(ViewMode::Core),
                         KeyAction::ViewCcd => app.set_view_mode(ViewMode::Ccd),
                         KeyAction::ViewNps => app.set_view_mode(ViewMode::Nps),
-                        KeyAction::ViewNuma => app.set_view_mode(ViewMode::Numa),
                         KeyAction::ToggleSmt => app.toggle_smt(),
                         KeyAction::CycleDisplayMode => app.cycle_display_mode(),
                         KeyAction::ToggleHelp => app.toggle_help(),

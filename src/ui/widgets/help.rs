@@ -40,7 +40,6 @@ impl Widget for HelpOverlay<'_> {
     c    Core view (individual CPUs)
     d    CCD view (grouped by CCD)
     n    NPS view (grouped by NPS node)
-    u    NUMA view (grouped by NUMA node)
 
   Display:
     s    Toggle SMT (all threads / physical only)

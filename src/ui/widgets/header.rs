@@ -80,7 +80,6 @@ impl Widget for Header<'_> {
                 ViewMode::Core => "[c]ore",
                 ViewMode::Ccd => "cc[d]",
                 ViewMode::Nps => "[n]ps",
-                ViewMode::Numa => "n[u]ma",
             };
 
             let smt_str = if self.show_smt { "All" } else { "Physical" };
